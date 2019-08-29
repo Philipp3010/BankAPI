@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\TransactionImport;
 
 use App\Transaction;
+use App\User;
 use Illuminate\Support\Facades\Log;
 use ZipArchive;
 
@@ -20,6 +21,14 @@ class TransactionImportService
     public function __construct(DownloaderInterface $downloader)
     {
         $this->downloader = $downloader;
+    }
+
+    public function importAllUsersTransactions(): void
+    {
+        $date = date('Y-m-d');
+        foreach (User::all() as $user) {
+            $this->importUserTransactions($user->id, $date);
+        }
     }
 
     public function importUserTransactions(int $userId, string $date): void
